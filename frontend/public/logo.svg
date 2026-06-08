@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <!-- White circular background -->
+  <circle cx="200" cy="200" r="190" fill="#ffffff" />
+  
+  <g transform="translate(0, -10)">
+    <!-- The dark blue lines for the roof -->
+    <g stroke="#1d4a6e" fill="none" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Left horizontal line -->
+      <line x1="60" y1="190" x2="110" y2="190" />
+      
+      <!-- Small house roof -->
+      <path d="M 106 190 L 160 146 L 214 190" />
+      
+      <!-- Large house roof -->
+      <path d="M 180 190 L 250 130 L 334 190" />
+      
+      <!-- Right horizontal line -->
+      <line x1="330" y1="190" x2="340" y2="190" />
+      
+      <!-- Window in the small house -->
+      <rect x="150" y="165" width="8" height="8" stroke-width="4"/>
+      <rect x="162" y="165" width="8" height="8" stroke-width="4"/>
+      <rect x="150" y="177" width="8" height="8" stroke-width="4"/>
+      <rect x="162" y="177" width="8" height="8" stroke-width="4"/>
+
+      <!-- Window in the large house -->
+      <rect x="240" y="155" width="8" height="8" stroke-width="4"/>
+      <rect x="252" y="155" width="8" height="8" stroke-width="4"/>
+      <rect x="240" y="167" width="8" height="8" stroke-width="4"/>
+      <rect x="252" y="167" width="8" height="8" stroke-width="4"/>
+    </g>
+    
+    <!-- Chimneys -->
+    <rect x="135" y="145" width="8" height="15" fill="#1d4a6e" />
+    <rect x="215" y="135" width="8" height="15" fill="#1d4a6e" />
+    
+    <!-- Text FIRST PRICE IMMO -->
+    <g transform="translate(60, 245) scale(0.85, 1.4)">
+      <text x="0" y="0" font-family="Arial, sans-serif" font-weight="bold" font-size="40" letter-spacing="-1.0" fill="#1d4a6e">
+        FIRST PRICE IMMO
+      </text>
+    </g>
+    
+    <!-- Bottom dark line -->
+    <line x1="60" y1="270" x2="340" y2="270" stroke="#1d4a6e" stroke-width="8" stroke-linecap="round" />
+  </g>
+</svg>
