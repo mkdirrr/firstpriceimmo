@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import AdminPropertyForm from '@/components/AdminPropertyForm';
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+import { fetchProperty } from '@/lib/api';
 
 type Property = {
   id: string;
@@ -27,14 +26,7 @@ export default function AdminPropertyEditPage({ params }: { params: { id: string
       setError('');
 
       try {
-        const response = await fetch(`${API_BASE}/api/properties/${params.id}`);
-
-        if (!response.ok) {
-          setError('Property not found.');
-          return;
-        }
-
-        const data = await response.json();
+        const data = await fetchProperty(params.id);
         setProperty(data);
       } catch {
         setError('Unable to load property details.');

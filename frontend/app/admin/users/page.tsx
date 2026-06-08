@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { fetchUsers } from '@/lib/api';
 
 type UserItem = {
   id: string;
@@ -26,19 +27,8 @@ export default function AdminUsersPage() {
       return;
     }
 
-    const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
-
-    fetch(`${API_BASE}/api/users`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const data = await response.json().catch(() => null);
-          throw new Error(data?.error || 'Impossible de charger les utilisateurs');
-        }
-        return response.json();
-      })
-      .then((data: UserItem[]) => setUsers(data))
+    fetchUsers(token)
+      .then((data: any) => setUsers(data))
       .catch((err) => setError(err.message || 'Impossible de charger les membres.'))
       .finally(() => setLoading(false));
   }, [token]);

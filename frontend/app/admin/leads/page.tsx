@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { updateLeadStatus, deleteLead } from '@/lib/api';
+import { updateLeadStatus, deleteLead, fetchContactLeads } from '@/lib/api';
 
 type ContactLead = {
   id: string;
@@ -64,19 +64,8 @@ export default function AdminLeadsPage() {
       return;
     }
 
-    const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000/api';
-
-    fetch(`${API_BASE}/contacts`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          const data = await response.json().catch(() => null);
-          throw new Error(data?.error || 'Impossible de charger les prospects');
-        }
-        return response.json();
-      })
-      .then((data: ContactLead[]) => setLeads(data))
+    fetchContactLeads(token)
+      .then((data: any) => setLeads(data))
       .catch((err) => setError(err.message || 'Impossible de charger les données.'))
       .finally(() => setLoading(false));
   }, [token]);

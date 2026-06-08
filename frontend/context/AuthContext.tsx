@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createClient } from '@/utils/supabase/client';
 
 export type UserRole = 'ADMIN' | 'USER';
 
@@ -25,49 +26,65 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const supabase = createClient();
 
   useEffect(() => {
-    if (typeof window === 'undefined') {
-      setIsLoading(false);
-      return;
-    }
+    let mounted = true;
 
-    const savedToken = window.localStorage.getItem('realestate_token');
-    const savedUser = window.localStorage.getItem('realestate_user');
-
-    if (savedToken) {
-      setToken(savedToken);
-    }
-
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser));
-      } catch {
-        window.localStorage.removeItem('realestate_user');
+    async function getSession() {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) console.error('Error fetching session:', error.message);
+      
+      if (mounted) {
+        if (session) {
+          setToken(session.access_token);
+          setUser({
+            id: session.user.id,
+            email: session.user.email || '',
+            name: session.user.user_metadata?.name || 'Admin',
+            role: 'ADMIN', // Assume anyone logged in is an Admin for this dashboard
+          });
+        } else {
+          setToken(null);
+          setUser(null);
+        }
+        setIsLoading(false);
       }
     }
 
-    setIsLoading(false);
-  }, []);
+    getSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session) {
+          setToken(session.access_token);
+          setUser({
+            id: session.user.id,
+            email: session.user.email || '',
+            name: session.user.user_metadata?.name || 'Admin',
+            role: 'ADMIN',
+          });
+        } else {
+          setToken(null);
+          setUser(null);
+        }
+        setIsLoading(false);
+      }
+    );
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
 
   const login = (nextToken: string, nextUser: AuthUser) => {
-    setToken(nextToken);
-    setUser(nextUser);
-
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem('realestate_token', nextToken);
-      window.localStorage.setItem('realestate_user', JSON.stringify(nextUser));
-    }
+    // handled by Supabase onAuthStateChange
   };
 
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-
-    if (typeof window !== 'undefined') {
-      window.localStorage.removeItem('realestate_token');
-      window.localStorage.removeItem('realestate_user');
-    }
+  const logout = async () => {
+    setIsLoading(true);
+    await supabase.auth.signOut();
   };
 
   const value = useMemo(

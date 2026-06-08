@@ -1,12 +1,12 @@
 import ContactForm from '../../../components/ContactForm';
 import ImageGallery from '../../../components/ImageGallery';
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+import { fetchProperty } from '@/lib/api';
 
 export default async function PropertyDetailsPage({ params }: { params: { id: string } }) {
-  const response = await fetch(`${API_BASE}/api/properties/${params.id}`, { cache: 'no-store' });
-
-  if (!response.ok) {
+  let property;
+  try {
+    property = await fetchProperty(params.id);
+  } catch (error) {
     return (
       <div className="page-container py-20 text-center">
         <div className="mx-auto max-w-md">
@@ -20,8 +20,6 @@ export default async function PropertyDetailsPage({ params }: { params: { id: st
       </div>
     );
   }
-
-  const property = await response.json();
   const images = (property.imageUrls && property.imageUrls.length > 0) 
     ? property.imageUrls 
     : ['https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80'];

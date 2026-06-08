@@ -50,8 +50,7 @@ export default function AdminLoginPage() {
     setIsSubmitting(true);
 
     try {
-      const data = await loginAdmin({ email, password });
-      login(data.token, data.user);
+      await loginAdmin({ email, password });
       router.push('/admin');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Connexion échouée. Veuillez réessayer.';

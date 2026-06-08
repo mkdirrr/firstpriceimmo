@@ -1,4 +1,5 @@
 import '../styles/globals.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import type { ReactNode } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
